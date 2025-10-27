@@ -1,0 +1,200 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Satellite Analysis</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #f6f8fb;
+      }
+      .card {
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(14, 30, 37, 0.06);
+      }
+      .preview-img {
+        max-width: 100%;
+        max-height: 360px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      /* spinner overlay placed inside the form card (absolute inside form) */
+      .spinner-overlay {
+        /* hidden by default; JS will toggle inline style */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.75);
+        z-index: 60; /* covers the form card only */
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('home') }}"
+          >Satellite Analysis</a
+        >
+        <div class="collapse navbar-collapse" id="navMenu">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path.startswith('/landuse') %}active{% endif %}"
+                href="{{ url_for('landuse') }}"
+                >Land Use</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path.startswith('/deforestation') %}active{% endif %}"
+                href="{{ url_for('deforestation') }}"
+                >Deforestation</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path.startswith('/performance') %}active{% endif %}"
+                href="{{ url_for('performance') }}"
+                >Model Performance</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container my-5">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="mb-3">
+        {% for category, msg in messages %}
+        <div
+          class="alert alert-{{ category }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ msg }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+          ></button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // small safe helper
+      function safeQueryAll(selector, root = document) {
+        try {
+          return Array.from(root.querySelectorAll(selector));
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function createFormOverlay(form) {
+        // if a leftover overlay element exists, remove it so we start clean
+        const existing = form.querySelectorAll(".spinner-overlay");
+        existing.forEach((el) => el.remove());
+
+        // create overlay element; IMPORTANT: inline style display:none so it never shows until JS toggles it
+        const overlay = document.createElement("div");
+        overlay.className = "spinner-overlay";
+        overlay.setAttribute("role", "status");
+        overlay.setAttribute("aria-hidden", "true");
+        overlay.style.display = "none"; // explicit inline style = guaranteed hidden
+        overlay.innerHTML = `
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem"></div>
+            <div class="mt-2">Processing — please wait...</div>
+          </div>
+        `;
+        // ensure form (or wrapper) is positioned for absolute overlay
+        const computed = window.getComputedStyle(form).position;
+        if (computed === "" || computed === "static") {
+          form.style.position = "relative";
+        }
+        // append overlay as last child of the form (it will cover the form area only)
+        form.appendChild(overlay);
+        return overlay;
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // handle all forms that want the spinner
+        safeQueryAll("form.with-spinner").forEach((form) => {
+          try {
+            const overlay = createFormOverlay(form);
+
+            // always hide overlay on load (extra safety)
+            overlay.style.display = "none";
+            overlay.setAttribute("aria-hidden", "true");
+
+            // show overlay on submit
+            form.addEventListener("submit", function () {
+              // small delay to ensure submit processing starts
+              try {
+                overlay.style.display = "flex";
+                overlay.setAttribute("aria-hidden", "false");
+                // add flex layout classes so spinner centers properly
+                overlay.classList.add(
+                  "d-flex",
+                  "align-items-center",
+                  "justify-content-center"
+                );
+                form
+                  .querySelectorAll("button[type=submit]")
+                  .forEach((b) => (b.disabled = true));
+              } catch (err) {
+                // ignore JS errors — don't break submission
+                console.error(err);
+              }
+            });
+
+            // hide overlay on pageshow (back-navigation) and on heavy failsafe
+            window.addEventListener("pageshow", () => {
+              overlay.style.display = "none";
+              overlay.setAttribute("aria-hidden", "true");
+              overlay.classList.remove(
+                "d-flex",
+                "align-items-center",
+                "justify-content-center"
+              );
+              form
+                .querySelectorAll("button[type=submit]")
+                .forEach((b) => (b.disabled = false));
+            });
+            // failsafe: hide after 60s
+            setTimeout(() => {
+              overlay.style.display = "none";
+              overlay.setAttribute("aria-hidden", "true");
+              overlay.classList.remove(
+                "d-flex",
+                "align-items-center",
+                "justify-content-center"
+              );
+              form
+                .querySelectorAll("button[type=submit]")
+                .forEach((b) => (b.disabled = false));
+            }, 60000);
+          } catch (e) {
+            console.error("Spinner init error", e);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

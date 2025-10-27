@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card p-4">
+      <h4>Deforestation Detection</h4>
+
+      <form method="post" enctype="multipart/form-data" class="with-spinner">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Before</label>
+            <input
+              type="file"
+              name="before"
+              accept="image/*"
+              onchange="previewFile(this)"
+              data-preview-target="previewBefore"
+              required
+              class="form-control"
+            />
+            <div class="mt-2 text-center">
+              <img id="previewBefore" class="preview-img" src="" alt="Before" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">After</label>
+            <input
+              type="file"
+              name="after"
+              accept="image/*"
+              onchange="previewFile(this)"
+              data-preview-target="previewAfter"
+              required
+              class="form-control"
+            />
+            <div class="mt-2 text-center">
+              <img id="previewAfter" class="preview-img" src="" alt="After" />
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 d-grid">
+          <button class="btn btn-danger" type="submit">Compare</button>
+        </div>
+      </form>
+
+      <!-- results outside the form so they remain accessible -->
+      {% if result %}
+      <hr />
+      <h5>Comparison Result</h5>
+      <p><strong>Change:</strong> {{ result.change_percent }}%</p>
+      <p><strong>Status:</strong> {{ result.status }}</p>
+
+      <div class="row mt-3">
+        <div class="col-md-6">
+          <h6>Before</h6>
+          {% if uploaded_before %}<img
+            src="{{ uploaded_before }}"
+            class="preview-img"
+          />{% endif %}
+        </div>
+        <div class="col-md-6">
+          <h6>After</h6>
+          {% if uploaded_after %}<img
+            src="{{ uploaded_after }}"
+            class="preview-img"
+          />{% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

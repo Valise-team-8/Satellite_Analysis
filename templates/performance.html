@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <div class="card p-4">
+      <h4>Model Performance</h4>
+      <div class="row">
+        <div class="col-md-7">
+          <h6>Training Plot</h6>
+          {% if training_plot_url %}
+          <img
+            src="{{ training_plot_url }}"
+            class="img-fluid"
+            style="border-radius: 8px"
+          />
+          {% else %}
+          <div class="alert alert-warning">
+            No training_plot.png found in model/
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-md-5">
+          <h6>Class Names</h6>
+          {% if class_names %}
+          <ul class="list-group">
+            {% for c in class_names %}
+            <li class="list-group-item">{{ loop.index }}. {{ c }}</li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <div class="alert alert-info">
+            No class_names.json found in model/
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

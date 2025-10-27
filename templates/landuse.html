@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <h4>Land Use Classification</h4>
+
+      <!-- form with spinner: overlay will be created inside by JS -->
+      <form method="POST" enctype="multipart/form-data" class="with-spinner">
+        <div class="mb-3">
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onchange="previewFile(this)"
+            data-preview-target="previewImage"
+            required
+            class="form-control"
+          />
+        </div>
+
+        <div class="d-grid">
+          <button class="btn btn-primary" type="submit">
+            Upload & Predict
+          </button>
+        </div>
+
+        <!-- preview lives inside the form so the overlay covers only inputs -->
+        <div class="mt-3 text-center">
+          <img
+            id="previewImage"
+            src="{{ uploaded_url or '' }}"
+            class="preview-img"
+            alt="Uploaded Image"
+          />
+        </div>
+      </form>
+
+      <!-- results outside the form — unaffected by overlay -->
+      {% if result %}
+      <div class="result mt-3">
+        <p><strong>Class:</strong> {{ result.class }}</p>
+        <p><strong>Confidence:</strong> {{ result.confidence }}%</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

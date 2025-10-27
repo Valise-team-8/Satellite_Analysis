@@ -1,0 +1,53 @@
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# === Virtual Environment ===
+venv/
+env/
+.venv/
+ENV/
+
+# === Flask / Web ===
+instance/
+uploads/
+static/uploads/
+*.db
+*.sqlite3
+
+
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.code-workspace
+
+# === Jupyter / Notebooks ===
+.ipynb_checkpoints/
+
+# === Temporary / Cache ===
+tmp/
+cache/
+*.tmp
+*.bak
+
+# === Dependencies ===
+*.egg-info/
+dist/
+build/
+
+# === OS-generated ===
+ehthumbs.db
+Icon?
+desktop.ini
+
+# === processed dataset ===
+dataset/
