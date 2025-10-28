@@ -31,9 +31,12 @@ A **Flask web app** provides a simple user interface to upload and visualize res
 Satellite_Analysis/
 │
 ├── app.py # Flask entry point
+├── Train_model.py # Code for Retraining the model
+├── dataset_extract.py # Prepareing Data For Training
 │
 ├── templates/
 │ ├── base.html # Common layout and navbar
+│ ├── home.html # Common layout and navbar
 │ ├── landuse.html # Land use upload & results
 │ ├── deforestation.html # Deforestation comparison page
 │ └── performance.html # Model performance display
@@ -49,6 +52,9 @@ Satellite_Analysis/
 ├── models/
 │ ├── landuse_model.h5 # Trained CNN model
 │ └── class_names.json # Land use class labels
+│
+├── dataset_unprocessed/ # contains all the raw data used for training
+├── dataset/ # Processed data used for training
 │
 ├── requirements.txt # Dependencies
 └── README.md # Project description
@@ -79,6 +85,25 @@ pip install -r requirements.txt
 python app.py
 
 Then open your browser at 👉 http://127.0.0.1:5000/
+
+
+### How To Retrain Model?
+
+1️⃣ Change dataset - optional
+
+Change files in 'dataset_unprocessed' with images to to train
+
+2️⃣ Extract Data
+
+python dataset_extract.py
+
+
+3️⃣ Train Model
+
+python Train_model.py
+
+
+
 🧠 Model Overview
 
 The CNN model (landuse_model.h5) is trained using satellite image datasets.
@@ -88,11 +113,11 @@ The model and class names are loaded dynamically from the models/ folder.
 
 Deforestation and afforestation are differentiated using pixel brightness:
 
-    🌳 Deforestation → Increase in brightness (vegetation loss → exposed soil)
+  🌳 Deforestation → Increase in brightness (vegetation loss → exposed soil)
 
-    🌱 Afforestation → Decrease in brightness (soil covered by vegetation)
+  🌱 Afforestation → Decrease in brightness (soil covered by vegetation)
 
-    ⚖️ No Major Change → Small difference (< threshold)
+  ⚖️ No Major Change → Small difference (< threshold)
 
 🧰 Tech Stack
 Category	Technology
@@ -101,16 +126,14 @@ Framework	Flask
 Machine Learning	TensorFlow / Keras
 Image Processing	OpenCV, NumPy
 Frontend/UI	Bootstrap 5
+
 📷 Example Usage
 
-    Upload a single image in Land Use to classify.
+  Upload a single image in Land Use to classify.
 
-    Upload a pair of images (Before and After) in Deforestation to detect change.
+  Upload a pair of images (Before and After) in Deforestation to detect change.
 
-    View results instantly with a simple progress spinner.
+  View results instantly with a simple progress spinner.
 
-📄 License
 
-This project is open-source under the MIT License.
-Feel free to use, modify, and improve it!
 ```
