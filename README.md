@@ -63,9 +63,10 @@ Satellite_Analysis/
 
 ## ⚙️ Installation
 
+```bash
 ### 1️⃣ Clone the Repository
 
-```bash
+
 git clone https://github.com/Valise-team-8/Satellite_Analysis.git
 cd Satellite_Analysis
 
