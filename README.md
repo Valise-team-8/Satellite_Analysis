@@ -88,7 +88,7 @@ python app.py
 Then open your browser at 👉 http://127.0.0.1:5000/
 
 
-### How To Retrain Model?
+### 🧠 How To Retrain Model?
 
 1️⃣ Change dataset - optional
 
@@ -103,8 +103,7 @@ python dataset_extract.py
 
 python Train_model.py
 
-
-
+```
 🧠 Model Overview
 
 The CNN model (landuse_model.h5) is trained using satellite image datasets.
@@ -137,4 +136,4 @@ Frontend/UI	Bootstrap 5
   View results instantly with a simple progress spinner.
 
 
-```
+
