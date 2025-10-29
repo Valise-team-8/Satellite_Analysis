@@ -66,7 +66,7 @@ Satellite_Analysis/
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/Satellite_Analysis.git
+git clone https://github.com/Valise-team-8/Satellite_Analysis.git
 cd Satellite_Analysis
 
 2️⃣ Create Virtual Environment
